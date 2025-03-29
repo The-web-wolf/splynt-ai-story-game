@@ -169,11 +169,6 @@ div {
 
 .btn-read-more {
   span {
-    position: relative;
-    display: inline-block;
-    line-height: 35px;
-    transition: 0.3s;
-
     &::after {
       content: '';
       position: absolute;
@@ -205,15 +200,11 @@ div {
     }
   }
 
-  &.border-transparent {
-    span {
-      &::after {
-        background-color: transparent;
-      }
-    }
-  }
-
-  &:hover {
+  &:hover,
+  &:focus-visible {
+    --_p: 0px;
+    outline-color: var(--color);
+    outline-offset: 0.05em;
     span {
       color: var(--color-primary);
 
@@ -224,24 +215,45 @@ div {
       }
     }
   }
-}
 
-.btn-link {
-  span {
-    position: relative;
-    color: var(--color-heading);
-    display: inline-block;
-    line-height: 35px;
-    transition: 0.3s;
-
-    i {
-      margin-left: 5px;
-    }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: .8;
   }
 
-  &:hover {
+  &:active {
+    background: var(--color-primary);
     span {
-      color: var(--color-primary);
+      color: var(--color-heading);
     }
   }
+
+  position: relative;
+  display: inline-block;
+  transition: 0.3s;
+
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-link) !important;
+  text-wrap: balance;
+  cursor: pointer;
+
+  --b: 2px;
+  --s: 0.45em;
+  --color: var(--color-primary);
+
+  padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));
+  --_p: var(--s);
+  background: conic-gradient(from 90deg at var(--b) var(--b), #0000 90deg, var(--color) 0) var(--_p)
+    var(--_p) / calc(100% - var(--b) - 2 * var(--_p)) calc(100% - var(--b) - 2 * var(--_p));
+  transition: 0.3s linear, color 0s, background-color 0s;
+  outline: var(--b) solid #0000;
+  outline-offset: 0.6em;
+
+  border: 0;
+
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
+

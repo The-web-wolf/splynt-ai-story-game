@@ -29,7 +29,8 @@
   min-height: inherit;
   .inner {
     .title {
-      // font-family: var(--font-primary);
+      font-family: var(--font-primary);
+      line-height: 1.3;
       margin-bottom: 16px;
       display: inline-block;
       text-wrap: balance;
@@ -43,17 +44,7 @@
       }
     }
 
-    .banner-button{
-      position: absolute;
-      bottom: 20px;
-      
-      left: 50%;
-      transform: translateX(-50%);
-      cursor: pointer;
-      *{
-        z-index: 100 !important; 
-      }
-    }
+
 
     .description {
       font-family: var(--font-primary);
@@ -142,7 +133,7 @@
   &.variation-default {
     .inner {
       position: relative;
-      padding: 20px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -211,6 +202,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
+  background-color: rgba(14, 12, 21, 0.704);
 
   &.bg-banner1 {
     // background-image: url(../../images/bg/main-banner-bg.png);
@@ -223,7 +215,7 @@
 
   .bg-shape {
     position: static !important;
-    z-index: -1;
+    z-index: 1;
 
     .bg-shape-one {
       position: absolute !important;

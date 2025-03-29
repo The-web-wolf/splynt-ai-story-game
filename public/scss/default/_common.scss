@@ -1,5 +1,50 @@
+* {
+  box-sizing: border-box;
+}
 html {
+  overflow: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
   scroll-behavior: smooth !important;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-body);
+  font-weight: var(--p-regular);
+  background-color: var(--color-bg);
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+  background-color: rgba($color-primary-rgb, 0.6);
+  color: var(--color-white);
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  height: 5px;
+  background-color: rgba($color-primary-rgb, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0.44, var(--color-primary-gradient-start)),
+    color-stop(1, var(--color-primary-gradient-end))
+  );
 }
 
 /* Theme Gradient */
@@ -223,33 +268,6 @@ html {
   }
 }
 
-::selection {
-  background-color: rgba($color-primary-rgb, 0.6);
-  color: var(--color-white);
-}
-
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: transparent;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-  height: 5px;
-  background-color: rgba($color-primary-rgb, 0.6);
-}
-
-::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-image: -webkit-gradient(
-    linear,
-    left bottom,
-    left top,
-    color-stop(0.44, var(--color-primary-gradient-start)),
-    color-stop(1, var(--color-primary-gradient-end))
-  );
-}
 
 .not-found-page {
   height: calc(100vh - var(--footer-safe-area));
@@ -314,16 +332,17 @@ html {
 
     .game-header {
       min-height: $header-height;
-
     }
     .game-body {
-      padding: .5em;
+      padding: 0.5em;
       width: 1200px;
       max-width: 99vw;
       margin: 0 auto;
       flex: 1;
-      display: flex;
-      flex-direction: column;
+
+      .story-text {
+        line-height: 1.5;
+      }
     }
     .game-footer {
       width: 1200px;
@@ -332,46 +351,7 @@ html {
       text-align: center;
       .choices {
         .choice {
-          padding: 20px;
-          .btn-read-more {
-            font-family: var(--font-primary);
-            font-size: 20px;
-            line-height: 1.7;
-            color: var(--color-link) !important;
-            text-wrap: balance;
-            cursor: pointer;
-
-            --b: 2px;
-            --s: 0.45em; 
-            --color: var(--color-primary); 
-
-            padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));
-            --_p: var(--s);
-            background: conic-gradient(from 90deg at var(--b) var(--b), #0000 90deg, var(--color) 0)
-              var(--_p) var(--_p) / calc(100% - var(--b) - 2 * var(--_p))
-              calc(100% - var(--b) - 2 * var(--_p));
-            transition: 0.3s linear, color 0s, background-color 0s;
-            outline: var(--b) solid #0000;
-            outline-offset: 0.6em;
-
-            border: 0;
-
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
-
-            &:hover,
-            &:focus-visible {
-              --_p: 0px;
-              outline-color: var(--color);
-              outline-offset: 0.05em;
-            }
-
-            &:active {
-              background: var(--color);
-              color: #fff;
-            }
-          }
+          padding: 5px;
         }
       }
     }
@@ -384,90 +364,89 @@ html {
   border-radius: var(--radius);
 
   textarea {
-      border: 0;
-      background-color: transparent;
-      // border-radius: var(--radius);
-      outline: 0;
-      display: block;
-      width: 100%;
-      padding: 16px 130px 16px 60px;
-      font-size: 16px;
-      line-height: 22px;
-      max-height: 200px;
+    border: 0;
+    background-color: transparent;
+    // border-radius: var(--radius);
+    outline: 0;
+    display: block;
+    width: 100%;
+    padding: 16px 130px 16px 60px;
+    font-size: 16px;
+    line-height: 22px;
+    max-height: 200px;
 
-      @media #{$small-mobile} {
-          padding: 12px 100px 35px 40px;
-      }
+    @media #{$small-mobile} {
+      padding: 12px 100px 35px 40px;
+    }
   }
 
   .left-icons {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      left: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 20px;
 
-      @media #{$small-mobile} {
-          left: 10px;
-      }
+    @media #{$small-mobile} {
+      left: 10px;
+    }
   }
 
   .right-icons {
-      right: 20px;
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      display: flex;
-      align-items: center;
+    right: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
 
-      @media #{$small-mobile} {
-          right: 10px;
-      }
+    @media #{$small-mobile} {
+      right: 10px;
+    }
 
-      .form-icon {
-          &+.form-icon {
-              margin-left: 10px;
-          }
+    .form-icon {
+      & + .form-icon {
+        margin-left: 10px;
       }
+    }
   }
 
   .form-icon {
+    color: var(--color-body);
+    height: 30px;
+    width: 30px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media #{$small-mobile} {
+      height: 20px;
+      width: 20px;
+    }
+
+    &:hover {
+      background: var(--color-dark);
+    }
+
+    i {
+      font-size: var(--font-size-b1);
+      line-height: var(--line-height-b1);
+    }
+
+    &.icon-mic {
+      background: transparent;
       color: var(--color-body);
-      height: 30px;
-      width: 30px;
-      border-radius: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      border: none;
+    }
 
-      @media #{$small-mobile} {
-          height: 20px;
-          width: 20px;
-      }
+    &.icon-send {
+      background: transparent;
+      color: var(--color-body);
+      border: none;
+    }
 
-      &:hover {
-          background: var(--color-dark);
-      }
-
-      i {
-          font-size: var(--font-size-b1);
-          line-height: var(--line-height-b1);
-      }
-
-
-      &.icon-mic {
-          background: transparent;
-          color: var(--color-body);
-          border: none;
-      }
-
-      &.icon-send {
-          background: transparent;
-          color: var(--color-body);
-          border: none;
-      }
-
-      &:hover {
-          background: var(--color-dark);
-      }
+    &:hover {
+      background: var(--color-dark);
+    }
   }
 }

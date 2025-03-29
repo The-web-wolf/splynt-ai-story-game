@@ -1,12 +1,12 @@
 // app/page.js
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { generateStoryStep, interpretUserInput, generateConclusion } from '@/lib/gemini'
 import { useGame } from '@/context/Context'
 import { Tooltip } from 'react-tooltip'
-import { Progress } from '@heroui/progress'
-import { Skeleton } from '@heroui/skeleton'
+import { Progress, Skeleton } from '@heroui/react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Home() {
   const {
@@ -24,27 +24,20 @@ export default function Home() {
     addGameLogEntry,
     gameOver,
     setGameOver,
+    gameStarted,
+    setGameStarted,
     conclusion,
     setConclusion,
     resetGame,
-    playerDifficultySettings,
-    setPlayerDifficultySettings,
+    gameSettings,
     backLogMessages,
     addBackLogMessage,
   } = useGame()
 
-  useEffect(() => {
-    if (!gameOver && gameState.outcome === null) {
-      fetchNextStep()
-    } else if (gameOver && gameState.outcome) {
-      fetchConclusion()
-    }
-  }, [gameOver, gameState.outcome])
-
   const fetchNextStep = async () => {
     setLoading(true)
     setError(null)
-    const stepData = await generateStoryStep(gameState, playerDifficultySettings)
+    const stepData = await generateStoryStep(gameState, gameSettings)
     if (stepData) {
       setCurrentStepData(stepData)
       addGameLogEntry({ type: 'story', text: stepData.story })
@@ -68,18 +61,18 @@ export default function Home() {
       hireability: gameState.hireability + effect,
       progress: [...gameState.progress, selectedChoice.text],
     })
-    addBackLogMessage({type: 'model', text: currentStepData.story})
-    addBackLogMessage({type: 'user', text: selectedChoice.text})
+    addBackLogMessage({ type: 'model', text: currentStepData.story })
+    addBackLogMessage({ type: 'user', text: selectedChoice.text })
     addGameLogEntry({ type: 'user', text: `Chose: ${selectedChoice.text}` })
     addGameLogEntry({ type: 'effect', text: `Hireability changed by: ${effect}` })
     setCurrentStepData(null)
     setUserInput('')
 
-    if (gameState.progress.length + 1 >= playerDifficultySettings.maxSteps) {
+    if (gameState.progress.length + 1 >= gameSettings.difficulty.maxSteps) {
       setGameOver(true)
       setGameState({
         outcome:
-          gameState.hireability > playerDifficultySettings.hiringThreshold ? 'Hired' : 'Rejected',
+          gameState.hireability > gameSettings.difficulty.hiringThreshold ? 'Hired' : 'Rejected',
       })
     } else {
       await fetchNextStep()
@@ -95,7 +88,7 @@ export default function Home() {
       userInput,
       gameState,
       currentStepData ? currentStepData.story : '',
-      playerDifficultySettings
+      gameSettings
     )
 
     if (interpretationData) {
@@ -113,11 +106,11 @@ export default function Home() {
       setUserInput('')
       setCurrentStepData(null)
 
-      if (gameState.progress.length + 1 >= playerDifficultySettings.maxSteps) {
+      if (gameState.progress.length + 1 >= gameSettings.difficulty.maxSteps) {
         setGameOver(true)
         setGameState({
           outcome:
-            gameState.hireability > playerDifficultySettings.hiringThreshold ? 'Hired' : 'Rejected',
+            gameState.hireability > gameSettings.difficulty.hiringThreshold ? 'Hired' : 'Rejected',
         })
       } else {
         await fetchNextStep()
@@ -131,7 +124,7 @@ export default function Home() {
   const fetchConclusion = async () => {
     setLoading(true)
     setError(null)
-    const finalConclusion = await generateConclusion(gameState, playerDifficultySettings)
+    const finalConclusion = await generateConclusion(gameState, gameSettings)
     setConclusion(finalConclusion)
     setLoading(false)
   }
@@ -141,8 +134,49 @@ export default function Home() {
   }
 
   const isPlaying = useMemo(() => {
-    return !gameOver && gameState.outcome === null
+    return !gameOver && gameState.outcome === null && gameState.progress.length
   }, [gameOver, gameState.outcome, currentStepData])
+
+  const storyOpener = `
+   Donna smirks as you approach. “Let me guess… here for Harvey?” <br />
+                You nod. “Mike Ross. Interview.” <br /> She tilts her head. “Think you’ve got what
+                it takes?” <br />
+                She gestures to the door.`
+
+  const initGame = async () => {
+    setLoading(true)
+    setError(null)
+    addBackLogMessage({ type: 'model', text: storyOpener })
+    addBackLogMessage({ type: 'user', text: 'Opened the door' })
+    addGameLogEntry({ type: 'story', text: 'Game started' })
+    await fetchNextStep()
+    setGameStarted(true)
+    setLoading(false)
+  }
+
+  const restartGame = async () => {
+    if (!gameStarted) {
+      return
+    }
+    resetGame()
+    initGame()
+  }
+
+  useEffect(() => {
+    if (gameOver && gameState.outcome) {
+      fetchConclusion()
+    }
+  }, [gameOver, gameState.outcome])
+
+  const storyRef = useRef(null) // story container
+  useEffect(() => {
+    if (storyRef.current) {
+      storyRef.current.scrollTo({
+        top: storyRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [backLogMessages, currentStepData]) // Trigger when new text is added
 
   return (
     <div className="game-container">
@@ -151,65 +185,103 @@ export default function Home() {
       <div className="game-area">
         <div className="game-header flex justify-between items-center mb-4">
           <div className="w-56">
-            {isPlaying && (
-              <>
-                <Tooltip id="my-tooltip" className="custom-tooltip tooltip-inner" />
-                <button
-                  className="btn-read-more"
-                  data-tooltip-id="my-tooltip"
-                  data-tooltip-content="Start Over"
-                  onClick={resetGame}
-                  disabled={loading}
-                >
-                  <i className="fa-solid fa-rotate-left"></i>
-                  <span className="ml-2">Start Over</span>
-                </button>
-              </>
-            )}
+            <Tooltip id="my-tooltip" className="custom-tooltip tooltip-inner" />
+            <button
+              className="btn-read-more"
+              data-tooltip-id="my-tooltip"
+              data-tooltip-content={
+                !gameStarted ? 'Start a new game' : 'Restart the game'
+              }
+              onClick={!gameStarted ? initGame : restartGame}
+              disabled={loading}
+            >
+              <i className="fa-solid fa-rotate-left"></i>
+            </button>
           </div>
           <div className="text-center">
-            <h2 className="text-2xl font-bold">Suits Interactive Game</h2>
-            <p className="text-sm text-gray-500">Current Step: {gameState.progress.length}</p>
+            <h2 className="text-xl font-bold">Suits Interactive Game</h2>
+            <p className="text-sm">{isPlaying ? 'Is playing' : 'Is not playing'}</p>
           </div>
           <div className="">
             <Progress
               classNames={{
                 base: 'min-w-[250px] ',
-                track: 'drop-shadow-sm border border-default',
+                track: 'drop-shadow-lg',
                 indicator: 'bg-gradient-to-r from-fuschia to-indigo',
                 label: 'tracking-wider font-medium text-default-600',
               }}
               label="Chances of getting hired"
               radius="md"
               showValueLabel={true}
-              size="lg"
+              size="sm"
               value={gameState.hireability}
             />
           </div>
         </div>
         <div className="game-body">
-          {isPlaying && (
-            <div className="text-2x">
-              {/* older steps */}
-              {backLogMessages.map((message, index) => (
-                <p
-                  key={index}
-                  className={`mb-2 ${
-                    message.type === 'user'
-                      ? 'font-bold'
-                      : message.type === 'model'
-                      ? 'italic text-gray-600'
-                      : ''
-                  }`}
+          {gameStarted ? (
+            <div
+              ref={storyRef} // Attach ref to enable scrolling
+              className="story overflow-y-auto max-h-[calc(100vh-520px)]"
+            >
+              {/* Animate older steps */}
+              <AnimatePresence>
+                {backLogMessages.map((message, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }} // Start hidden and below
+                    animate={{ opacity: 1, y: 0 }} // Fade in and slide up
+                    exit={{ opacity: 0, y: -10 }} // Fade out when removed
+                    transition={{ duration: 0.5 }}
+                    className={`mb-2 text-3xl story-text opacity-25 ${
+                      message.type === 'user'
+                        ? 'text-violet-300'
+                        : message.type === 'model'
+                        ? ' text-violet-200'
+                        : ''
+                    }`}
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: message.text,
+                      }}
+                    ></div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+
+              {/* Animate current step */}
+              {currentStepData && (
+                <motion.div
+                  key={currentStepData.story} // Ensure animation on new text
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="mb-2 text-3xl story-tex"
                 >
-                  {message.text}
-                </p>
-              ))}
-              {
-                currentStepData && (
-                  <p className="mb-2">{currentStepData.story}</p>
-                )
-              }
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: currentStepData.story,
+                    }}
+                  ></div>
+                </motion.div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <motion.div
+                key={storyOpener} // Ensure animation on new text
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.1 }}
+                className="mb-2 text-3xl story-text"
+              >
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: storyOpener,
+                  }}
+                ></div>
+              </motion.div>
             </div>
           )}
         </div>
@@ -220,7 +292,7 @@ export default function Home() {
                 {currentStepData.choices.map((choice, index) => (
                   <div key={index} className="choice">
                     <a
-                      className="btn-read-more"
+                      className="btn-read-more text-ellipsis"
                       role="button"
                       onClick={() => handleChoice(index + 1)}
                     >
@@ -230,7 +302,18 @@ export default function Home() {
                 ))}
               </>
             )}
-            <div className="mt-10">
+            {!gameStarted && !gameOver && (
+              <div className="start-game">
+                <button
+                  className="btn-read-more"
+                  onClick={initGame}
+                  disabled={loading || gameStarted}
+                >
+                  Open the door
+                </button>
+              </div>
+            )}
+            <div className="mt-5">
               <Tooltip id="my-tooltip" className="custom-tooltip tooltip-inner" />
               <form className="new-chat-form border-gradient">
                 <textarea

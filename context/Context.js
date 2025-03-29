@@ -1,111 +1,108 @@
 // app/gameContext.js
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext } from 'react'
+import { DIFFICULTY_LEVELS,LANGUAGES } from '@/lib/constants' // Import your difficulty levels from constants.js
 
 // Initialize game state
 const initialGameState = {
   hireability: 50,
   progress: [],
   outcome: null,
-};
+}
 
-const difficultySettings = {
-  light: {
-    maxSteps: 5,
-    maxGainPoints: 10,
-    maxLosingPoints: 2,
-    hiringThreshold: 60,
-  },
-  medium: {
-    maxSteps: 6,
-    maxGainPoints: 7,
-    maxLosingPoints: 5,
-    hiringThreshold: 70,
-  },
-  hard: {
-    maxSteps: 8,
-    maxGainPoints: 5,
-    maxLosingPoints: 7,
-    hiringThreshold: 70,
-  },
-  ultraHard: {
-    maxSteps: 10,
-    maxGainPoints: 3,
-    maxLosingPoints: 9,
-    hiringThreshold: 62,
-  },
-};
+const defaultGameSettings = {
+  language: LANGUAGES[0].key, // Default to the first language in the list
+  difficulty: DIFFICULTY_LEVELS[0]
+}
 
 // Create the context
-const GameContext = createContext();
+const GameContext = createContext()
 
 // Create a custom hook to use the context
 export const useGame = () => {
-  return useContext(GameContext);
-};
+  return useContext(GameContext)
+}
 
 // Create a provider component
 export const GameProvider = ({ children }) => {
-  const [gameState, setGameState] = useState(initialGameState);
-  const [currentStepData, setCurrentStepData] = useState(null);
-  const [userInput, setUserInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [gameLog, setGameLog] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
-  const [conclusion, setConclusion] = useState("");
-  const [backLogMessages, setBackLogMessages] = useState([]);
-
-  const [playerDifficultySettings, setPlayerDifficultySettings] = useState(difficultySettings.medium)
+  const [gameState, setGameState] = useState(initialGameState)
+  const [currentStepData, setCurrentStepData] = useState(null)
+  const [userInput, setUserInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [gameLog, setGameLog] = useState([])
+  const [gameStarted, setGameStarted] = useState(false)
+  const [gameOver, setGameOver] = useState(false)
+  const [conclusion, setConclusion] = useState('')
+  const [backLogMessages, setBackLogMessages] = useState([])
+  const [gameSettings, setGameSettings] = useState(defaultGameSettings)
 
   // Functions to update game state and other relevant data
   const updateGameState = (newState) => {
-    setGameState((prevGameState) => ({ ...prevGameState, ...newState }));
-  };
+    setGameState((prevGameState) => ({ ...prevGameState, ...newState }))
+  }
 
   const updateCurrentStepData = (data) => {
-    setCurrentStepData(data);
-  };
+    setCurrentStepData(data)
+  }
 
   const updateUserInput = (input) => {
-    setUserInput(input);
-  };
+    setUserInput(input)
+  }
 
   const updateLoading = (value) => {
-    setLoading(value);
-  };
+    setLoading(value)
+  }
 
   const updateError = (message) => {
-    setError(message);
-  };
+    setError(message)
+  }
 
   const addGameLogEntry = (entry) => {
-    setGameLog((prevLog) => [...prevLog, entry]);
-  };
+    setGameLog((prevLog) => [...prevLog, entry])
+  }
 
   const addBackLogMessage = (message) => {
-    setBackLogMessages((prevMessages) => [...prevMessages, message]);
+    setBackLogMessages((prevMessages) => [...prevMessages, message])
   }
 
   const setGameOverState = (value) => {
-    setGameOver(value);
-  };
+    setGameOver(value)
+  }
 
   const setConclusionText = (text) => {
-    setConclusion(text);
-  };
+    setConclusion(text)
+  }
 
+  const setGameLanguage = (language) => {
+    setGameSettings((prevSettings) => ({
+      ...prevSettings,
+      lanaguage: language,
+    }))
+  }
+
+  const setGameDifficulty = (difficulty) => {
+    const difficultySettings = DIFFICULTY_LEVELS.find((level) => level.key === difficulty) || defaultGameSettings.difficulty
+    setGameSettings((prevSettings) => ({
+      ...prevSettings,
+      difficulty: {
+        ...prevSettings.difficulty,
+        ...difficultySettings,
+      },
+    }))
+  }
 
   const resetGame = () => {
-    setGameState(initialGameState);
-    setCurrentStepData(null);
-    setUserInput("");
-    setLoading(false);
-    setError(null);
-    setGameLog([]);
-    setGameOver(false);
-    setConclusion("");
-    setPlayerDifficultySettings(difficultySettings.medium)
-  };
+    setGameState(initialGameState)
+    setCurrentStepData(null)
+    setUserInput('')
+    setLoading(false)
+    setError(null)
+    setGameLog([])
+    setGameStarted(false)
+    setGameOver(false)
+    setConclusion('')
+    setBackLogMessages([])
+  }
 
   const value = {
     gameState,
@@ -125,14 +122,17 @@ export const GameProvider = ({ children }) => {
     conclusion,
     setConclusion: setConclusionText,
     resetGame,
-    playerDifficultySettings,
-    setPlayerDifficultySettings,
     backLogMessages,
     setBackLogMessages,
     addBackLogMessage,
-  };
+    gameSettings,
+    setGameLanguage,
+    setGameDifficulty,
+    gameStarted,
+    setGameStarted,
+  }
 
-  return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
-};
+  return <GameContext.Provider value={value}>{children}</GameContext.Provider>
+}
 
-export { GameContext, initialGameState, difficultySettings };
+export { GameContext, initialGameState }
