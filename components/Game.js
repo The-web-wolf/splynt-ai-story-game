@@ -7,7 +7,8 @@ import {
   interpretUserInput,
   generateConclusion,
   generateExitConfirmation,
-} from '@/lib/gemini'
+  generateGameOpener,
+} from '@/lib/model'
 import { useGame } from '@/context/Context'
 import {
   Progress,
@@ -52,6 +53,20 @@ export default function Home() {
   } = useGame()
 
   const router = useRouter()
+
+  const [storyOpener, setStoryOpener] = useState('')
+
+  useEffect(() => {
+    if (storyOpener) return
+    setLoading(true)
+    loadStoryOpener()
+  }, [])
+
+  const loadStoryOpener = async () => {
+    const storyOpenerResponse = await generateGameOpener(gameSettings)
+    setStoryOpener(storyOpenerResponse)
+    setLoading(false)
+  }
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [exitConfirmation, setExitConfirmation] = useState({
@@ -166,12 +181,6 @@ export default function Home() {
   const handleInputChange = (event) => {
     setUserInput(event.target.value)
   }
-  // TODO: purify the html &&  model should send html too
-  const storyOpener = `
-   Donna smirks as you approach. “Let me guess… here for Harvey?” <br />
-                You nod. “Mike Ross. Interview.” <br /> She tilts her head. “Think you’ve got what
-                it takes?” <br />
-                She gestures to the door.`
 
   const initGame = async () => {
     try {
@@ -400,7 +409,7 @@ export default function Home() {
                   onClick={initGame}
                   disabled={loading || gameStarted}
                 >
-                  Open the door
+                  Open the door <i className="fa-solid fa-door-open ml-2"></i>
                 </button>
               </div>
             )}
