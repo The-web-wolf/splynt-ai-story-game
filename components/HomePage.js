@@ -6,12 +6,15 @@ import { useEffect, useState } from 'react'
 import { useGame, defaultGameSettings } from '@/context/Context'
 import { LANGUAGES, DIFFICULTY_LEVELS } from '@/lib/constants'
 
+import { useRouter } from "next/navigation";
+
 const HomePage = () => {
   const { gameSettings, setGameSettings } = useGame()
 
   const [selectedLanguage, setSelectedLanguage] = useState(gameSettings.language)
   const [selectedDifficulty, setSelectedDifficulty] = useState(gameSettings.difficulty.key)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const startGame = (e) => {
     setLoading(true)
@@ -29,8 +32,10 @@ const HomePage = () => {
   useEffect(() => {
     console.log(gameSettings)
     if (gameSettings.default !== true) {
-      setLoading(false)
-      setTimeout(() => (window.location.href = '/game'), 500)
+      setTimeout(() => {
+router.push('/game')
+        setLoading(false)
+      }, 2000)
     }
   }, [gameSettings])
 

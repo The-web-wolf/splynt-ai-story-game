@@ -25,6 +25,7 @@
   }
 }
 
+
 .slider-area {
   min-height: inherit;
   .inner {
@@ -42,8 +43,6 @@
         }
       }
     }
-
-
 
     .description {
       padding: 0 10%;
@@ -197,15 +196,6 @@
 }
 
 .slider-bg-image {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  background-color: rgba(14, 12, 21, 0.704);
-
-  &.bg-banner1 {
-    // background-image: url(../../images/bg/main-banner-bg.png);
-    background-size: unset;
-  }
 
   &.slider-bg-shape {
     position: relative;
@@ -219,6 +209,7 @@
       position: absolute !important;
       top: 0;
       left: 0;
+      height: 100%;
     }
 
     .bg-shape-two {

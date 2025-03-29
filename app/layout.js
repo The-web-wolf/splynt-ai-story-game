@@ -7,7 +7,6 @@ import { GameProvider } from '@/context/Context'
 import { HeroUIProvider } from '@heroui/react'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
-import BackToTop from '@/app/backToTop'
 
 // import 'bootstrap/dist/css/bootstrap.min.css'
 import '@/public/css/plugins/fontawesome-all.min.css'
@@ -86,7 +85,6 @@ export default function RootLayout({ children }) {
                   <Image
                     className="bg-shape-one"
                     width={640}
-                    height={949}
                     src={bgShapeOne}
                     alt="Bg Shape"
                   />
@@ -94,13 +92,11 @@ export default function RootLayout({ children }) {
                     className="bg-shape-two"
                     src={bgShapeTwo}
                     width={626}
-                    height={1004}
                     alt="Bg Shape"
                   />
                 </div>
               </div>
             </section>
-            <BackToTop />
           </GameProvider>
         </main>
       </body>
