@@ -1,13 +1,29 @@
 // app/page.js
 'use client'
 
-import { useEffect, useMemo, useRef } from 'react'
-import { generateStoryStep, interpretUserInput, generateConclusion } from '@/lib/gemini'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  generateStoryStep,
+  interpretUserInput,
+  generateConclusion,
+  generateExitConfirmation,
+} from '@/lib/gemini'
 import { useGame } from '@/context/Context'
-import { Progress, Skeleton, Tooltip } from '@heroui/react'
+import {
+  Progress,
+  Skeleton,
+  Tooltip,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from '@heroui/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import DOMPurify from 'dompurify'
 import { ALLOWED_HTML_TAGS } from '@/lib/constants'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const {
@@ -34,6 +50,15 @@ export default function Home() {
     backLogMessages,
     addBackLogMessage,
   } = useGame()
+
+  const router = useRouter()
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [exitConfirmation, setExitConfirmation] = useState({
+    loading: false,
+    title: 'You are standing up...',
+    body: 'Harvey is reflecting on your interview. Please wait while we finalize the outcome.',
+  })
 
   const fetchNextStep = async () => {
     setLoading(true)
@@ -124,6 +149,20 @@ export default function Home() {
     setLoading(false)
   }
 
+  const onExitAttempt = async () => {
+    onOpen()
+    setExitConfirmation({
+      loading: true,
+      title: 'You are standing up...',
+      body: 'Harvey is reflecting on your interview. Please wait while we finalize the outcome.',
+    })
+    const confirmationResponse = await generateExitConfirmation(gameState, gameSettings)
+    setExitConfirmation((prevState) => ({
+      ...confirmationResponse,
+      loading: false,
+    }))
+  }
+
   const handleInputChange = (event) => {
     setUserInput(event.target.value)
   }
@@ -201,6 +240,12 @@ export default function Home() {
       <div className="game-area">
         <div className="game-header flex justify-between items-center mb-4">
           <div className="w-56">
+            <Tooltip content="Home">
+              <button className="btn-read-more mr-5" onClick={onExitAttempt}>
+                <i className="fa-solid fa-home"></i>
+              </button>
+            </Tooltip>
+
             <Tooltip content={!gameStarted ? 'Start a new game' : 'Restart the game'}>
               <button
                 className="btn-read-more"
@@ -217,15 +262,15 @@ export default function Home() {
           <div className="">
             <Progress
               classNames={{
-                base: 'min-w-[250px] ',
+                base: 'min-w-[300px] ',
                 track: 'drop-shadow-lg',
-                indicator: 'bg-gradient-to-r from-pink-500 to-red-500',
+                indicator: 'bg-gradient-to-r from-pink-500 to-fuchsia-500',
                 label: 'tracking-wider font-medium text-default-600',
               }}
               label="Chance of getting hired"
-              radius="md"
+              radius="lg"
               showValueLabel={true}
-              size="sm"
+              size="md"
               value={gameState.hireability}
             />
           </div>
@@ -427,6 +472,26 @@ export default function Home() {
         </div>
       </div> */}
       </div>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">{exitConfirmation.title}</ModalHeader>
+              <ModalBody>{exitConfirmation.body}</ModalBody>
+              <ModalFooter>
+                <button onClick={onClose}>Sit back</button>
+                <button
+                  className="btn-read-more"
+                  onClick={() => router.push('/')}
+                  disabled={exitConfirmation.loading}
+                >
+                  {exitConfirmation.loading ? 'Wait a sec...' : "I'll Leave"}
+                </button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   )
 }

@@ -95,9 +95,9 @@ const HomePage = () => {
             ))}
           </Select>
         </div>
-        <div className="mt-10">
+        <div className="mt-20">
           <button
-            className="rainbow-gradient-btn without-shape-circle btn-large has-shadow"
+            className="btn-read-more p-6"
             type="submit"
             disabled={loading}
           >
