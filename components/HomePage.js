@@ -2,23 +2,44 @@
 
 import Shapes from '@/components/Shapes'
 import { Select, SelectItem, Avatar } from '@heroui/react'
-import { useState } from 'react'
-import { useGame } from '@/context/Context'
+import { useEffect, useState } from 'react'
+import { useGame, defaultGameSettings } from '@/context/Context'
 import { LANGUAGES, DIFFICULTY_LEVELS } from '@/lib/constants'
 
 const HomePage = () => {
-
-  const { gameSettings, setGameLanguage, setGameDifficulty } = useGame()
+  const { gameSettings, setGameSettings } = useGame()
 
   const [selectedLanguage, setSelectedLanguage] = useState(gameSettings.language)
   const [selectedDifficulty, setSelectedDifficulty] = useState(gameSettings.difficulty.key)
+  const [loading, setLoading] = useState(false)
 
   const startGame = (e) => {
+    setLoading(true)
     e.preventDefault()
-    setGameLanguage(selectedLanguage)
-    setGameDifficulty(selectedDifficulty)
-    window.location.href = '/game'
+    const difficultySettings =
+      DIFFICULTY_LEVELS.find((level) => level.key === selectedDifficulty.key) ||
+      defaultGameSettings.difficulty
+    setGameSettings({
+      language: selectedLanguage,
+      default: false,
+      difficulty: difficultySettings,
+    })
   }
+
+  useEffect(() => {
+    console.log(gameSettings)
+    if (gameSettings.default !== true) {
+      setLoading(false)
+      setTimeout(() => (window.location.href = '/game'), 500)
+    }
+  }, [gameSettings])
+
+  useEffect(() => {
+    setGameSettings((prevSettings) => ({
+      ...prevSettings,
+      default: true,
+    }))
+  }, [])
 
   return (
     <div className="inner text-center">
@@ -45,11 +66,7 @@ const HomePage = () => {
             {DIFFICULTY_LEVELS.map((level) => (
               <SelectItem
                 key={level.key}
-                endContent={
-                  <i
-                    className={`fa-solid fa-${level.icon} text-2xl`}
-                  ></i>
-                }
+                endContent={<i className={`fa-solid fa-${level.icon} text-2xl`}></i>}
               >
                 {level.label}
               </SelectItem>
@@ -77,9 +94,15 @@ const HomePage = () => {
           <button
             className="rainbow-gradient-btn without-shape-circle btn-large has-shadow"
             type="submit"
+            disabled={loading}
           >
             <span>
-              Begin Game <i className="fa-regular fa-gamepad-modern ms-3"></i>
+              Begin Game{' '}
+              <i
+                className={`fa-regular ms-3 ${
+                  loading ? 'fa-yin-yang fa-spin ' : 'fa-gamepad-modern'
+                }`}
+              ></i>
             </span>
           </button>
         </div>

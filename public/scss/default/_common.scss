@@ -339,16 +339,20 @@ body {
       max-width: 99vw;
       margin: 0 auto;
       flex: 1;
-
       .story-text {
         line-height: 1.5;
+        font-size: 30px;
       }
     }
     .game-footer {
+      height: 300px;
+      display:flex;
+      flex-direction: column;
+      justify-content: flex-end;
       width: 1200px;
       max-width: 99vw;
       margin: 0 auto;
-      text-align: center;
+      // text-align: center;
       .choices {
         .choice {
           padding: 5px;
@@ -358,12 +362,16 @@ body {
   }
 }
 
+.custom-skeleton{
+  background:rgba(85, 93, 119, 0.9) !important;
+}
+
 .new-chat-form {
   margin: 0;
   position: relative;
   border-radius: var(--radius);
 
-  textarea {
+  input,textarea {
     border: 0;
     background-color: transparent;
     // border-radius: var(--radius);
@@ -426,6 +434,9 @@ body {
 
     &:hover {
       background: var(--color-dark);
+    }
+    &:disabled{
+      cursor:not-allowed
     }
 
     i {

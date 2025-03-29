@@ -1,6 +1,6 @@
 // app/gameContext.js
 import { createContext, useState, useContext } from 'react'
-import { DIFFICULTY_LEVELS,LANGUAGES } from '@/lib/constants' // Import your difficulty levels from constants.js
+import { DIFFICULTY_LEVELS, LANGUAGES } from '@/lib/constants' // Import your difficulty levels from constants.js
 
 // Initialize game state
 const initialGameState = {
@@ -11,7 +11,8 @@ const initialGameState = {
 
 const defaultGameSettings = {
   language: LANGUAGES[0].key, // Default to the first language in the list
-  difficulty: DIFFICULTY_LEVELS[0]
+  difficulty: DIFFICULTY_LEVELS[0],
+  default: true,
 }
 
 // Create the context
@@ -73,23 +74,21 @@ export const GameProvider = ({ children }) => {
     setConclusion(text)
   }
 
-  const setGameLanguage = (language) => {
-    setGameSettings((prevSettings) => ({
-      ...prevSettings,
-      lanaguage: language,
-    }))
-  }
+  // const setGameLanguage = (language) => {
+  //   setGameSettings((prevSettings) => ({
+  //     ...prevSettings,
+  //     lanaguage: language,
+  //   }))
+  // }
 
-  const setGameDifficulty = (difficulty) => {
-    const difficultySettings = DIFFICULTY_LEVELS.find((level) => level.key === difficulty) || defaultGameSettings.difficulty
-    setGameSettings((prevSettings) => ({
-      ...prevSettings,
-      difficulty: {
-        ...prevSettings.difficulty,
-        ...difficultySettings,
-      },
-    }))
-  }
+  // const setGameDifficulty = (difficulty) => {
+  //   const difficultySettings =
+  //     DIFFICULTY_LEVELS.find((level) => level.key === difficulty) || defaultGameSettings.difficulty
+  //   setGameSettings((prevSettings) => ({
+  //     ...prevSettings,
+  //     difficulty: difficultySettings,
+  //   }))
+  // }
 
   const resetGame = () => {
     setGameState(initialGameState)
@@ -126,8 +125,7 @@ export const GameProvider = ({ children }) => {
     setBackLogMessages,
     addBackLogMessage,
     gameSettings,
-    setGameLanguage,
-    setGameDifficulty,
+    setGameSettings,
     gameStarted,
     setGameStarted,
   }
@@ -135,4 +133,4 @@ export const GameProvider = ({ children }) => {
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>
 }
 
-export { GameContext, initialGameState }
+export { GameContext, initialGameState, defaultGameSettings }

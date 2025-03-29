@@ -1,5 +1,5 @@
 {
-  "name": "ubd-website",
+  "name": "interactive-ai-game",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -21,7 +21,6 @@
     "postcss": "^8.5.3",
     "react": "^18",
     "react-dom": "^18",
-    "react-tooltip": "^5.28.0",
     "sass": "^1.71.1",
     "sharp": "^0.33.4"
   },
