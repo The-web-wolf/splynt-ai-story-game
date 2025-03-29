@@ -6,6 +6,8 @@ import { generateStoryStep, interpretUserInput, generateConclusion } from '@/lib
 import { useGame } from '@/context/Context'
 import { Progress, Skeleton, Tooltip } from '@heroui/react'
 import { motion, AnimatePresence } from 'framer-motion'
+import DOMPurify from 'dompurify'
+import { ALLOWED_HTML_TAGS } from '@/lib/constants'
 
 export default function Home() {
   const {
@@ -253,7 +255,9 @@ export default function Home() {
                   >
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: message.text,
+                        __html: DOMPurify.sanitize(message.text, {
+                          ALLOWED_TAGS: ALLOWED_HTML_TAGS,
+                        }),
                       }}
                     ></div>
                   </motion.div>
@@ -271,7 +275,9 @@ export default function Home() {
                 >
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: currentStepData.story,
+                      __html: DOMPurify.sanitize(currentStepData.story, {
+                        ALLOWED_TAGS: ALLOWED_HTML_TAGS,
+                      }),
                     }}
                   ></div>
                 </motion.div>
@@ -287,7 +293,7 @@ export default function Home() {
             >
               <div
                 dangerouslySetInnerHTML={{
-                  __html: storyOpener,
+                  __html: DOMPurify.sanitize(storyOpener, { ALLOWED_TAGS: ALLOWED_HTML_TAGS }),
                 }}
               ></div>
             </motion.div>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useGame, defaultGameSettings } from '@/context/Context'
 import { LANGUAGES, DIFFICULTY_LEVELS } from '@/lib/constants'
 
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation'
 
 const HomePage = () => {
   const { gameSettings, setGameSettings } = useGame()
@@ -33,7 +33,7 @@ const HomePage = () => {
     console.log(gameSettings)
     if (gameSettings.default !== true) {
       setTimeout(() => {
-router.push('/game')
+        router.push('/game')
         setLoading(false)
       }, 2000)
     }
