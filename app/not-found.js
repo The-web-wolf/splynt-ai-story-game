@@ -5,9 +5,9 @@ import Link from 'next/link'
 
 const ErrorPage = () => {
   return (
-    <div className="text-center full-height row align-items-center justify-content-center not-found-page">
+    <div className="text-center  not-found-page flex">
       <div className="container">
-        <h1 className="theme-gradient text-large" style={{ fontSize: '10em' }}>
+        <h1 className="theme-gradient" style={{ fontSize: '10em' }}>
           404!
         </h1>
         <h3>

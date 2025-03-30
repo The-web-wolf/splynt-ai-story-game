@@ -25,6 +25,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { purifyText } from '@/lib/utilities'
 import LogsButton from '@/components/LogsButton'
+import GamePlaybackTime from '@/components/PlayBackTime'
 
 export default function Home() {
   const {
@@ -40,6 +41,7 @@ export default function Home() {
     setError,
     addGameLogEntry,
     gameOver,
+    gameLog,
     setGameOver,
     gameStarted,
     setGameStarted,
@@ -207,11 +209,13 @@ export default function Home() {
   }
 
   const restartGame = async () => {
-    if (!gameStarted) {
-      return
-    }
-    resetGame()
-    initGame()
+    // if (!gameStarted) {
+    //   return
+    // }
+    // resetGame()
+    // initGame()
+
+    window.location.href="/"
   }
 
   // auto scroll story container
@@ -254,20 +258,10 @@ export default function Home() {
 
       <div className="game-area">
         <div className="game-header flex justify-between items-center mb-4">
-          <div className="w-96">
+          <div className="w-56">
             <Tooltip content="Return Home">
-              <button className="btn-read-more" onClick={onExitAttempt}>
+              <button className="btn-read-more mr-5" onClick={onExitAttempt}>
                 <i className="fa-light fa-home"></i>
-              </button>
-            </Tooltip>
-
-            <Tooltip content={!gameStarted ? 'Start a new game' : 'Restart the game'}>
-              <button
-                className="btn-read-more mx-5"
-                onClick={!gameStarted ? initGame : restartGame}
-                disabled={loading}
-              >
-                <i className="fa-light fa-rotate-left"></i>
               </button>
             </Tooltip>
 
@@ -275,6 +269,7 @@ export default function Home() {
           </div>
           <div className="text-center">
             <h2 className="text-xl font-bold">Suits Interactive Game</h2>
+            {gameLog.length ? <GamePlaybackTime /> : '00:00'}
           </div>
           <div className="">
             {/* TODO: Different colors for progress based on level */}
@@ -449,20 +444,21 @@ export default function Home() {
               )}
             </AnimatePresence>
             <AnimatePresence>
-              {gameOver &&
-                gameState.outcome(
-                  <motion.div
-                    className="start-game"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.5, ease: 'easeInOut', delay: 2 }}
-                  >
-                    <button className="btn-read-more" onClick={restartGame} disabled={!gameOver}>
-                      Start a new game <i className="fa-light fa-rotate-left ml-2"></i>
-                    </button>
-                  </motion.div>
-                )}
+              {gameOver && gameState.outcome ? (
+                <motion.div
+                  className="start-game"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.5, ease: 'easeInOut', delay: 2 }}
+                >
+                  <button className="btn-read-more" onClick={restartGame} disabled={!gameOver}>
+                    Start a new game <i className="fa-light fa-rotate-left ml-2"></i>
+                  </button>
+                </motion.div>
+              ) : (
+                ''
+              )}
             </AnimatePresence>
             <div className="mt-5">
               <div className="new-chat-form border-gradient">
@@ -484,6 +480,7 @@ export default function Home() {
                         handleCustomInput()
                       }
                     }}
+                    value={userInput}
                   />
                 </Tooltip>
                 <div className="left-icons">

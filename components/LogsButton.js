@@ -9,10 +9,7 @@ import {
   useDisclosure,
 } from '@heroui/react'
 
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
-dayjs.extend(relativeTime)
+import { relativeTimeFromFirstLog } from '@/lib/utilities'
 
 const LogsButton = () => {
   const { gameLog } = useGame()
@@ -33,17 +30,6 @@ const LogsButton = () => {
       default:
         return 'log-default'
     }
-  }
-
-  const relativeTimeFromFirstLog = (timestamp) => {
-    const firstLogTimestamp = gameLog[0].timestamp
-    const diff = dayjs(timestamp).diff(dayjs(firstLogTimestamp), 'second')
-    const minutes = Math.floor(diff / 60)
-      .toString()
-      .padStart(2, '0')
-    const seconds = (diff % 60).toString().padStart(2, '0')
-
-    return `${minutes}:${seconds}`
   }
 
   return (
@@ -70,7 +56,7 @@ const LogsButton = () => {
                       <div key={index} className="flex gap-4">
                         <span className="font-bold text-violet-50">
                           {' '}
-                          {relativeTimeFromFirstLog(logItem.timestamp)}{' '}
+                          {relativeTimeFromFirstLog(logItem.timestamp, gameLog)}{' '}
                         </span>
                         <span className={logClassNames(logItem)}> {logItem.text}</span>
                       </div>
