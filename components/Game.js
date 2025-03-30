@@ -22,9 +22,8 @@ import {
   useDisclosure,
 } from '@heroui/react'
 import { motion, AnimatePresence } from 'framer-motion'
-import DOMPurify from 'dompurify'
-import { ALLOWED_HTML_TAGS } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
+import { purifyText } from '@/lib/utilities'
 
 export default function Home() {
   const {
@@ -309,9 +308,7 @@ export default function Home() {
                   >
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(message.text, {
-                          ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-                        }),
+                        __html: purifyText(message.text),
                       }}
                     ></div>
                   </motion.div>
@@ -329,9 +326,7 @@ export default function Home() {
                 >
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(currentStepData.story, {
-                        ALLOWED_TAGS: ALLOWED_HTML_TAGS,
-                      }),
+                      __html: purifyText(currentStepData.story),
                     }}
                   ></div>
                 </motion.div>
@@ -347,10 +342,24 @@ export default function Home() {
             >
               <div
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(storyOpener, { ALLOWED_TAGS: ALLOWED_HTML_TAGS }),
+                  __html: purifyText(storyOpener),
                 }}
               ></div>
             </motion.div>
+          )}
+
+          {gameOver && gameState.outcome && (
+            <div className="bg-white p-4 rounded shadow mb-4">
+              <p className="text-lg font-semibold mb-2">Interview Concluded!</p>
+              <p className="mb-2">{conclusion}</p>
+              <p className="font-bold">Outcome: {gameState.outcome}</p>
+              <button
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded mt-2"
+                onClick={restartGame}
+              >
+                Play Again
+              </button>
+            </div>
           )}
         </div>
         <div className="game-footer">
@@ -362,7 +371,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
-                className=" mt-4"
+                className=" my-4"
               >
                 <Skeleton className="h-3 w-4/5 rounded-lg custom-skeleton" />
                 <Skeleton className="h-3 w-3/5 rounded-lg custom-skeleton mt-2" />
@@ -456,19 +465,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* {gameOver && gameState.outcome && (
-          <div className="bg-white p-4 rounded shadow mb-4">
-            <p className="text-lg font-semibold mb-2">Interview Concluded!</p>
-            <p className="mb-2">{conclusion}</p>
-            <p className="font-bold">Outcome: {gameState.outcome}</p>
-            <button
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded mt-2"
-              onClick={resetGame}
-            >
-              Play Again
-            </button>
-          </div>
-        )} */}
 
         {/* <div className="mt-4 bg-white p-4 rounded shadow">
         <h2 className="font-semibold mb-2">Game Log:</h2>

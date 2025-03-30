@@ -50,7 +50,7 @@ const HomePage = () => {
     <div className="inner text-center">
       <div>
         <h1 className="title display-one text-balance font-bold">
-          AI-Powered Interactive
+          AI-Powered
           <span className="header-caption theme-gradient ">Interactive</span> Story Game
         </h1>
         <p className="description ">
