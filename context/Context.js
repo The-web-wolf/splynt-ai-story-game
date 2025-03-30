@@ -1,6 +1,7 @@
 // app/gameContext.js
 import { createContext, useState, useContext } from 'react'
 import { DIFFICULTY_LEVELS, LANGUAGES } from '@/lib/constants' // Import your difficulty levels from constants.js
+import DOMPurify from 'dompurify'
 
 // Initialize game state
 const initialGameState = {
@@ -59,7 +60,11 @@ export const GameProvider = ({ children }) => {
   }
 
   const addGameLogEntry = (entry) => {
-    setGameLog((prevLog) => [...prevLog, entry])
+    const temp = document.createElement('div')
+    temp.innerHTML = DOMPurify.sanitize(entry.text)
+    const logEntry = { ...entry, text: temp.textContent || '' }
+    console.log('log entry', logEntry)
+    setGameLog((prevLog) => [...prevLog, logEntry])
   }
 
   const addBackLogMessage = (message) => {

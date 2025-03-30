@@ -24,6 +24,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { purifyText } from '@/lib/utilities'
+import LogsButton from '@/components/LogsButton'
 
 export default function Home() {
   const {
@@ -37,7 +38,6 @@ export default function Home() {
     setLoading,
     error,
     setError,
-    gameLog,
     addGameLogEntry,
     gameOver,
     setGameOver,
@@ -57,6 +57,7 @@ export default function Home() {
 
   useEffect(() => {
     if (storyOpener) return
+    addGameLogEntry({ type: 'story', text: 'Game started' })
     setLoading(true)
     loadStoryOpener()
   }, [])
@@ -80,7 +81,7 @@ export default function Home() {
     const stepData = await generateStoryStep(gameState, gameSettings)
     if (stepData) {
       setCurrentStepData(stepData)
-      addGameLogEntry({ type: 'story', text: stepData.story })
+      addGameLogEntry({ type: 'model', text: stepData.story })
     } else {
       setError('Failed to fetch the next story step.')
       setGameOver(true)
@@ -159,6 +160,8 @@ export default function Home() {
     setLoading(true)
     setError(null)
     const finalConclusion = await generateConclusion(gameState, gameSettings)
+    addGameLogEntry({type: 'story', text: 'Game eneded with conclusion'})
+    addGameLogEntry({type: 'model', text: finalConclusion})
     setConclusion(finalConclusion)
     setLoading(false)
   }
@@ -198,7 +201,7 @@ export default function Home() {
       setGameStarted(true)
       addBackLogMessage({ type: 'model', text: storyOpener })
       addBackLogMessage({ type: 'user', text: 'Opened the door' })
-      addGameLogEntry({ type: 'story', text: 'Game started' })
+      addGameLogEntry({ type: 'user', text: 'Chose: Opened the door' })
     } catch (e) {
       console.log(e)
     }
@@ -212,16 +215,22 @@ export default function Home() {
     initGame()
   }
 
+  // auto scroll story container
   const storyRef = useRef(null) // story container
   useEffect(() => {
     if (storyRef.current) {
-      storyRef.current.scrollTo({
-        top: storyRef.current.scrollHeight,
-        behavior: 'smooth',
-      })
+      const { scrollHeight, clientHeight, scrollTop } = storyRef.current
+      // Only scroll if content overflows
+      if (scrollHeight > clientHeight) {
+        storyRef.current.scrollTo({
+          top: scrollHeight,
+          behavior: scrollTop === 0 ? 'auto' : 'smooth', // Avoid smooth scrolling on first render
+        })
+      }
     }
-  }, [backLogMessages, currentStepData]) // Trigger when new text is added
+  }, [backLogMessages, currentStepData, conclusion])
 
+  // Core game logic
   useEffect(() => {
     if (gameState.progress.length == 0) {
       return
@@ -229,10 +238,9 @@ export default function Home() {
     if (!gameOver && !gameState.outcome) {
       if (gameState.progress.length + 1 >= gameSettings.difficulty.maxSteps) {
         setGameOver(true)
-        setGameState({
-          outcome:
-            gameState.hireability > gameSettings.difficulty.hiringThreshold ? 'Hired' : 'Rejected',
-        })
+        const outcome =
+          gameState.hireability > gameSettings.difficulty.hiringThreshold ? 'Hired' : 'Rejected'
+        setGameState({ outcome })
       } else {
         fetchNextStep()
       }
@@ -247,32 +255,35 @@ export default function Home() {
 
       <div className="game-area">
         <div className="game-header flex justify-between items-center mb-4">
-          <div className="w-56">
-            <Tooltip content="Home">
-              <button className="btn-read-more mr-5" onClick={onExitAttempt}>
-                <i className="fa-solid fa-home"></i>
+          <div className="w-96">
+            <Tooltip content="Return Home">
+              <button className="btn-read-more" onClick={onExitAttempt}>
+                <i className="fa-light fa-home"></i>
               </button>
             </Tooltip>
 
             <Tooltip content={!gameStarted ? 'Start a new game' : 'Restart the game'}>
               <button
-                className="btn-read-more"
+                className="btn-read-more mx-5"
                 onClick={!gameStarted ? initGame : restartGame}
                 disabled={loading}
               >
-                <i className="fa-solid fa-rotate-left"></i>
+                <i className="fa-light fa-rotate-left"></i>
               </button>
             </Tooltip>
+
+            <LogsButton />
           </div>
           <div className="text-center">
             <h2 className="text-xl font-bold">Suits Interactive Game</h2>
           </div>
           <div className="">
+            {/* TODO: Different colors for progress based on level */}
             <Progress
               classNames={{
                 base: 'min-w-[300px] ',
                 track: 'drop-shadow-lg',
-                indicator: 'bg-gradient-to-r from-pink-500 to-fuchsia-500',
+                indicator: 'bg-gradient-to-r from-fuchsia-800 to-violet-500',
                 label: 'tracking-wider font-medium text-default-600',
               }}
               label="Chance of getting hired"
@@ -287,24 +298,26 @@ export default function Home() {
           {gameStarted ? (
             <div
               ref={storyRef} // Attach ref to enable scrolling
-              className="story overflow-y-auto max-h-[calc(100vh-450px)] "
+              className="overflow-y-auto max-h-[calc(100vh-450px)] "
             >
               {/* Animate older steps */}
               <AnimatePresence>
                 {backLogMessages.map((message, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, y: 10 }} // Start hidden and below
-                    animate={{ opacity: 0.7, y: 0 }} // Fade in and slide up
+                    initial={{ opacity: 0, color: '#bcc3d7' }}
+                    animate={{
+                      opacity: 0.7,
+                      color:
+                        message.type === 'user'
+                          ? '#c4b5fd'
+                          : message.type === 'model'
+                          ? '#a78bfa'
+                          : '',
+                    }}
                     exit={{ opacity: 0, y: -10 }} // Fade out when removed
                     transition={{ duration: 0.5 }}
-                    className={`mb-2 story-text ${
-                      message.type === 'user'
-                        ? 'text-violet-300'
-                        : message.type === 'model'
-                        ? ' text-violet-500'
-                        : ''
-                    }`}
+                    className={`mb-2 story-text`}
                   >
                     <div
                       dangerouslySetInnerHTML={{
@@ -316,49 +329,60 @@ export default function Home() {
               </AnimatePresence>
 
               {/* Animate current step */}
-              {currentStepData && (
+              <AnimatePresence>
+                {currentStepData && (
+                  <motion.div
+                    key={currentStepData.story} // Ensure animation on new text
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="story-text"
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: purifyText(currentStepData.story),
+                      }}
+                    ></div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Conclusion  */}
+              <AnimatePresence>
+                {gameOver && gameState.outcome && (
+                  <motion.div
+                    key={conclusion} // Ensure animation on new text
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mb-2 story-text"
+                  >
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: purifyText(conclusion),
+                      }}
+                    ></div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <div className="overflow-y-auto max-h-[calc(100vh-450px)] ">
+              <AnimatePresence>
                 <motion.div
-                  key={currentStepData.story} // Ensure animation on new text
+                  key={storyOpener} // Ensure animation on new text
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="mb-2 story-text"
+                  className="story-text"
                 >
                   <div
                     dangerouslySetInnerHTML={{
-                      __html: purifyText(currentStepData.story),
+                      __html: purifyText(storyOpener),
                     }}
                   ></div>
                 </motion.div>
-              )}
-            </div>
-          ) : (
-            <motion.div
-              key={storyOpener} // Ensure animation on new text
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.1 }}
-              className="mb-2 story-text"
-            >
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: purifyText(storyOpener),
-                }}
-              ></div>
-            </motion.div>
-          )}
-
-          {gameOver && gameState.outcome && (
-            <div className="bg-white p-4 rounded shadow mb-4">
-              <p className="text-lg font-semibold mb-2">Interview Concluded!</p>
-              <p className="mb-2">{conclusion}</p>
-              <p className="font-bold">Outcome: {gameState.outcome}</p>
-              <button
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded mt-2"
-                onClick={restartGame}
-              >
-                Play Again
-              </button>
+              </AnimatePresence>
             </div>
           )}
         </div>
@@ -368,10 +392,9 @@ export default function Home() {
               <motion.div
                 key="loading"
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0, transition: { delay: 0.5 } }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: 'easeInOut' }}
-                className=" my-4"
+                transition={{ duration: 0.1, ease: 'easeInOut' }}
               >
                 <Skeleton className="h-3 w-4/5 rounded-lg custom-skeleton" />
                 <Skeleton className="h-3 w-3/5 rounded-lg custom-skeleton mt-2" />
@@ -379,62 +402,84 @@ export default function Home() {
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="choices">
-            <AnimatePresence
-              key="currentStepData"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
-              className=" mt-4"
-            >
-              {!gameOver && gameState.outcome === null && currentStepData && (
-                <AnimatePresence>
-                  {currentStepData.choices.map((choice, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      className="choice"
+          <div className="choices mt-4">
+            <AnimatePresence>
+              {!gameOver &&
+                gameState.outcome === null &&
+                currentStepData &&
+                currentStepData.choices.map((choice, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0, transition: { delay: 0.6 } }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
+                    className="choice"
+                  >
+                    <a
+                      className="btn-read-more text-ellipsis"
+                      role="button"
+                      onClick={() => handleChoice(index + 1)}
                     >
-                      <a
-                        className="btn-read-more text-ellipsis"
-                        role="button"
-                        onClick={() => handleChoice(index + 1)}
-                      >
-                        <span>{choice.text}</span>
-                      </a>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                      <span>{choice.text}</span>
+                    </a>
+                  </motion.div>
+                ))}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {!gameStarted && !gameOver && (
+                <motion.div
+                  className="start-game"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { duration: 0.5, ease: 'easeInOut', delay: 2 },
+                  }}
+                  exit={{ opacity: 0, y: -10, transition: { duration: 0.5, ease: 'easeInOut' } }}
+                >
+                  <button
+                    className="btn-read-more"
+                    onClick={initGame}
+                    disabled={loading || gameStarted}
+                  >
+                    Open the door <i className="fa-light fa-door-open ml-2"></i>
+                  </button>
+                </motion.div>
               )}
             </AnimatePresence>
-            {!gameStarted && !gameOver && (
-              <div className="start-game">
-                <button
-                  className="btn-read-more"
-                  onClick={initGame}
-                  disabled={loading || gameStarted}
-                >
-                  Open the door <i className="fa-solid fa-door-open ml-2"></i>
-                </button>
-              </div>
-            )}
+            <AnimatePresence>
+              {gameOver &&
+                gameState.outcome(
+                  <motion.div
+                    className="start-game"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.5, ease: 'easeInOut', delay: 2 }}
+                  >
+                    <button className="btn-read-more" onClick={restartGame} disabled={!gameOver}>
+                      Start a new game <i className="fa-light fa-rotate-left ml-2"></i>
+                    </button>
+                  </motion.div>
+                )}
+            </AnimatePresence>
             <div className="mt-5">
               <form className="new-chat-form border-gradient">
                 <Tooltip
                   content={
                     gameStarted
                       ? 'Type your response'
+                      : gameOver
+                      ? 'Start a new game to use this'
                       : 'After opening the door you may use this to interact'
                   }
                 >
                   <input
                     placeholder="You can type a response..."
                     onChange={handleInputChange}
-                    readOnly={!gameStarted}
+                    readOnly={!gameStarted || gameOver || loading}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         handleCustomInput()
@@ -465,17 +510,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {/* <div className="mt-4 bg-white p-4 rounded shadow">
-        <h2 className="font-semibold mb-2">Game Log:</h2>
-        <div className="overflow-y-auto max-h-40">
-          {gameLog.map((logItem, index) => (
-            <p key={index} className={`mb-1 ${logItem.type === 'user' ? 'font-bold' : ''} ${logItem.type === 'effect' ? 'text-green-600' : ''} ${logItem.type === 'interpretation' ? 'italic text-gray-600' : ''}`}>
-              {logItem.text}
-            </p>
-          ))}
-        </div>
-      </div> */}
       </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
         <ModalContent>
