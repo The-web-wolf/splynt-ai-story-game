@@ -9,7 +9,7 @@ import { LANGUAGES, DIFFICULTY_LEVELS } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
 
 const HomePage = () => {
-  const { gameSettings, setGameSettings } = useGame()
+  const { gameSettings, setGameSettings, addGameLogEntry } = useGame()
 
   const [selectedLanguage, setSelectedLanguage] = useState(gameSettings.language)
   const [selectedDifficulty, setSelectedDifficulty] = useState(gameSettings.difficulty.key)
@@ -20,21 +20,22 @@ const HomePage = () => {
     setLoading(true)
     e.preventDefault()
     const difficultySettings =
-      DIFFICULTY_LEVELS.find((level) => level.key === selectedDifficulty.key) ||
+      DIFFICULTY_LEVELS.find((level) => level.key === selectedDifficulty) ||
       defaultGameSettings.difficulty
     setGameSettings({
       language: selectedLanguage,
       default: false,
       difficulty: difficultySettings,
     })
+
+    addGameLogEntry({type: 'story', text: `Game Difficulty set to ${difficultySettings.label}`})
+    addGameLogEntry({type: 'story', text: `Language set to ${selectedLanguage}`})
   }
 
   useEffect(() => {
-    console.log(gameSettings)
     if (gameSettings.default !== true) {
       setTimeout(() => {
         router.push('/game')
-        setLoading(false)
       }, 2000)
     }
   }, [gameSettings])

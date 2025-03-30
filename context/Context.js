@@ -62,8 +62,7 @@ export const GameProvider = ({ children }) => {
   const addGameLogEntry = (entry) => {
     const temp = document.createElement('div')
     temp.innerHTML = DOMPurify.sanitize(entry.text)
-    const logEntry = { ...entry, text: temp.textContent || '' }
-    console.log('log entry', logEntry)
+    const logEntry = { ...entry, text: temp.textContent || '', timestamp: new Date() }
     setGameLog((prevLog) => [...prevLog, logEntry])
   }
 

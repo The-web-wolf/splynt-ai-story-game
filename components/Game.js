@@ -57,7 +57,6 @@ export default function Home() {
 
   useEffect(() => {
     if (storyOpener) return
-    addGameLogEntry({ type: 'story', text: 'Game started' })
     setLoading(true)
     loadStoryOpener()
   }, [])
@@ -145,7 +144,7 @@ export default function Home() {
       addGameLogEntry({ type: 'user', text: `Typed: ${userInput}` })
       addGameLogEntry({
         type: 'interpretation',
-        text: `Interpretation: ${interpretationData.reply}`,
+        text: `Interpretation: ${interpretationData.reasoning}`,
       })
       addGameLogEntry({ type: 'effect', text: `Hireability changed by: ${effect}` })
       setUserInput('')
@@ -160,8 +159,8 @@ export default function Home() {
     setLoading(true)
     setError(null)
     const finalConclusion = await generateConclusion(gameState, gameSettings)
-    addGameLogEntry({type: 'story', text: 'Game eneded with conclusion'})
-    addGameLogEntry({type: 'model', text: finalConclusion})
+    addGameLogEntry({ type: 'story', text: 'Game eneded with conclusion' })
+    addGameLogEntry({ type: 'model', text: finalConclusion })
     setConclusion(finalConclusion)
     setLoading(false)
   }
@@ -466,7 +465,7 @@ export default function Home() {
                 )}
             </AnimatePresence>
             <div className="mt-5">
-              <form className="new-chat-form border-gradient">
+              <div className="new-chat-form border-gradient">
                 <Tooltip
                   content={
                     gameStarted
@@ -506,7 +505,7 @@ export default function Home() {
                     </button>
                   </Tooltip>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
