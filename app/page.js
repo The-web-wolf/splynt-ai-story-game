@@ -1,9 +1,9 @@
 import HomePage from '@/components/HomePage'
 
 export const metadata = {
-  title: 'Suits Game',
+  title: 'Splynt',
   description:
-    'Unlock the Power of the Cloud: Your One-Stop Solution for Comprehensive Cloud Computing Services',
+    'AI Powered interactive story game',
 }
 
 const HomePageLayout = () => {
