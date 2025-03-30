@@ -17,7 +17,7 @@ import Image from 'next/image'
 
 import bgShapeOne from '@/public/images/bg/bg-shape-four.png'
 import bgShapeTwo from '@/public/images/bg/bg-shape-five.png'
-
+import { Analytics } from "@vercel/analytics/react"
 const sora = Sora({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
@@ -106,6 +106,7 @@ export default function RootLayout({ children }) {
             </section>
           </GameProvider>
         </main>
+        <Analytics />
       </body>
     </html>
   )
