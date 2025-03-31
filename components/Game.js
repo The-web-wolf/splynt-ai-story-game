@@ -26,7 +26,6 @@ import { useRouter } from 'next/navigation'
 import { purifyText } from '@/lib/utilities'
 import LogsButton from '@/components/LogsButton'
 import GamePlaybackTime from '@/components/PlayBackTime'
-import {useMediaQuery} from "react-responsive"
 
 export default function Home() {
   const {
@@ -55,9 +54,6 @@ export default function Home() {
   } = useGame()
 
   const router = useRouter()
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
-  const isDesktop = useMediaQuery({ minWidth: 1024 });
 
 
   const [storyOpener, setStoryOpener] = useState('')
@@ -262,8 +258,8 @@ export default function Home() {
       {error && <p className="">Error: {error}</p>}
 
       <div className="game-area">
-        <div className="game-header flex flex-wrap items-center mb-4 bg-black/20 backdrop-blur-sm md:bg-transparent">
-          <div className="w-2/5 md:w-1/4">
+        <div className="game-header flex flex-wrap items-center mb-4 bg-black/30 backdrop-blur-sm md:bg-transparent">
+          <div className="w-1/3 md:w-1/4">
             <Tooltip content="Return Home">
               <button className="btn-read-more mr-2 md:mr-5" onClick={onExitAttempt}>
                 <i className="fa-light fa-home"></i>
@@ -272,32 +268,43 @@ export default function Home() {
 
             <LogsButton />
           </div>
-          <div className="w-3/5 md:w-1/2 text-left md:text-center">
+          <div className="hidden md:inline-block md:w-1/2 text-left md:text-center">
             <h2 className="text-md md:text-xl font-bold">Suits Interactive Game</h2>
             {gameLog.length ? <GamePlaybackTime /> : '00:00'}
           </div>
-          <div className="w-full md:w-1/4 mt-4 md:mt-0">
+          <div className="w-2/3 md:w-1/4">
             {/* TODO: Different colors for progress based on level */}
             <Progress
               classNames={{
-                base: 'min-w-[300px]',
+                base:'min-w-[300px] hidden md:inline-block',
+                track: 'drop-shadow-lg',
+                indicator: 'bg-gradient-to-r from-fuchsia-800 to-violet-500',
+                label: 'tracking-wider font-medium text-default-600 mb-1',
+              }}
+              label="Chance of getting hired"
+              radius="md"
+              showValueLabel={true}
+              size="md"
+              value={gameState.hireability}
+            />
+            <Progress
+              classNames={{
+                base:'min-w-[200px] md:hidden',
                 track: 'drop-shadow-lg',
                 indicator: 'bg-gradient-to-r from-fuchsia-800 to-violet-500',
                 label: 'tracking-wider font-medium text-default-600',
               }}
               label="Chance of getting hired"
-              radius="lg"
+              radius={false}
               showValueLabel={true}
-              size={isMobile ? "sm" : "md"}
+              size="sm"
               value={gameState.hireability}
             />
           </div>
         </div>
-        <div className="game-body">
+        <div className="game-body overflow-y-auto max-h-[calc(100dvh-300px)] md:max-h-[calc(100dvh-450px)]" ref={storyRef}>
           {gameStarted ? (
             <div
-              ref={storyRef} // Attach ref to enable scrolling
-              className="overflow-y-auto max-h-[calc(100vh-450px)] "
             >
               {/* Animate older steps */}
               <AnimatePresence>
@@ -335,7 +342,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="story-text"
+                    className=" story-text"
                   >
                     <div
                       dangerouslySetInnerHTML={{
@@ -366,7 +373,7 @@ export default function Home() {
               </AnimatePresence>
             </div>
           ) : (
-            <div className="overflow-y-auto max-h-[calc(100vh-450px)] ">
+            <div>
               <AnimatePresence>
                 <motion.div
                   key={storyOpener} // Ensure animation on new text
@@ -401,7 +408,7 @@ export default function Home() {
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="choices mt-4">
+          <div className="choices md:mt-4">
             <AnimatePresence>
               {!gameOver &&
                 gameState.outcome === null &&
@@ -465,8 +472,8 @@ export default function Home() {
                 ''
               )}
             </AnimatePresence>
-            <div className="mt-5">
-              <div className="new-chat-form border-gradient">
+            <div className="mt-2 md:mt-5">
+              <div className="response-form border-gradient">
                 <Tooltip
                   content={
                     gameStarted

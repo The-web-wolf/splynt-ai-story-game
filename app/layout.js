@@ -15,8 +15,8 @@ import '@/app/globals.css'
 
 import Image from 'next/image'
 
-import bgShapeOne from '@/public/images/bg/bg-shape-four.png'
-import bgShapeTwo from '@/public/images/bg/bg-shape-five.png'
+import bgShapeOne from '@/public/images/bg/bg-shape-one.png'
+import bgShapeTwo from '@/public/images/bg/bg-shape-two.png'
 import { Analytics } from '@vercel/analytics/react'
 const sora = Sora({
   subsets: ['latin'],

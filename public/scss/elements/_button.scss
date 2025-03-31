@@ -1,59 +1,4 @@
-/* Button Styles  */
-
-.button-group {
-  margin: -10px;
-
-  a,
-  button {
-    margin: 10px;
-  }
-}
-
-a,
-button,
-div {
-  &.btn-default {
-    padding: 0 28px;
-    border-style: solid;
-    border-width: 0px;
-    border-color: transparent;
-    border-radius: 8px;
-    background-color: transparent;
-    background: linear-gradient(
-      to right,
-      var(--color-primary-gradient-start),
-      var(--color-primary-gradient-end)
-    );
-    background-size: 200% auto;
-    transition-duration: 300ms;
-    color: var(--color-white);
-    font-size: 16px;
-    font-weight: 500;
-    text-align: center;
-    text-decoration: none;
-    text-shadow: var(--shadow-light);
-    display: inline-block;
-    height: 50px;
-    line-height: 50px;
-    letter-spacing: 0.5px;
-    width: auto;
-    transition: 0.4s;
-
-    @media #{$sm-layout} {
-      padding: 0 22px;
-    }
-
-    &:hover {
-      box-shadow: var(--shadow-primary);
-      -webkit-filter: brightness(125%);
-      filter: brightness(125%);
-      color: var(--color-white);
-      text-decoration: none;
-    }
-  }
-}
-
-.btn-read-more {
+/* Button Styles  */.btn-read-more {
   span {
     &::after {
       content: '';
@@ -104,7 +49,7 @@ div {
 
   &:disabled {
     cursor: not-allowed;
-    opacity: .8;
+    opacity: 0.8;
   }
 
   &:active {
@@ -121,7 +66,7 @@ div {
   font-size: 18px;
   line-height: 1.6;
   color: var(--color-link) !important;
-  text-wrap: balance;
+  text-wrap: pretty;
   cursor: pointer;
 
   --b: 2px;
@@ -129,9 +74,10 @@ div {
   @media #{$sm-layout} {
     --s: 0.2em;
 
-    font-size:16px
+    font-size: 14px;
+    line-height: 1.3;
   }
-  
+
   --color: var(--color-primary);
 
   padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));
@@ -148,4 +94,3 @@ div {
   -webkit-user-select: none;
   touch-action: manipulation;
 }
-

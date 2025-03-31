@@ -1,6 +1,5 @@
 'use client'
 
-import Shapes from '@/components/Shapes'
 import { Select, SelectItem, Avatar } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useGame, defaultGameSettings } from '@/context/Context'

@@ -26,11 +26,10 @@
 }
 
 .main-layout {
-  // background-color: red;
   .container {
     max-width: 1200px;
     margin: 0 auto;
-    height: 100vh;
+      height: 100dvh; // Uses dynamic viewport height, fixes overscroll
     display: flex;
     flex-direction: column;
     justify-content: space-between;
