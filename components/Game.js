@@ -55,7 +55,6 @@ export default function Home() {
 
   const router = useRouter()
 
-
   const [storyOpener, setStoryOpener] = useState('')
 
   useEffect(() => {
@@ -216,7 +215,7 @@ export default function Home() {
     // resetGame()
     // initGame()
 
-    window.location.href="/"
+    window.location.href = '/'
   }
 
   // auto scroll story container
@@ -276,7 +275,7 @@ export default function Home() {
             {/* TODO: Different colors for progress based on level */}
             <Progress
               classNames={{
-                base:'min-w-[300px] hidden md:inline-block',
+                base: 'min-w-[300px] hidden md:inline-block',
                 track: 'drop-shadow-lg',
                 indicator: 'bg-gradient-to-r from-fuchsia-800 to-violet-500',
                 label: 'tracking-wider font-medium text-default-600 mb-1',
@@ -289,7 +288,7 @@ export default function Home() {
             />
             <Progress
               classNames={{
-                base:'min-w-[200px] md:hidden',
+                base: 'min-w-[200px] md:hidden',
                 track: 'drop-shadow-lg',
                 indicator: 'bg-gradient-to-r from-fuchsia-800 to-violet-500',
                 label: 'tracking-wider font-medium text-default-600',
@@ -302,10 +301,12 @@ export default function Home() {
             />
           </div>
         </div>
-        <div className="game-body overflow-y-auto max-h-[calc(100dvh-300px)] md:max-h-[calc(100dvh-450px)]" ref={storyRef}>
+        <div
+          className={`game-body overflow-y-auto max-h-[calc(100dvh-300px)] md:max-h-[calc(100dvh-450px)]`}
+          ref={storyRef}
+        >
           {gameStarted ? (
-            <div
-            >
+            <div>
               {/* Animate older steps */}
               <AnimatePresence>
                 {backLogMessages.map((message, index) => (
@@ -542,10 +543,3 @@ export default function Home() {
     </div>
   )
 }
-
-
-// <div class="row">
-//   <div class="col-4 col-md-3"> </div>
-//   <div class="col-8 col-md-6 text-left text-md-center"> </div>
-//   <div class="col-12 col-md-3"> </div>
-// </div>
