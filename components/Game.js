@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation'
 import { purifyText } from '@/lib/utilities'
 import LogsButton from '@/components/LogsButton'
 import GamePlaybackTime from '@/components/PlayBackTime'
+import {useMediaQuery} from "react-responsive"
 
 export default function Home() {
   const {
@@ -54,6 +55,10 @@ export default function Home() {
   } = useGame()
 
   const router = useRouter()
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
+  const isDesktop = useMediaQuery({ minWidth: 1024 });
+
 
   const [storyOpener, setStoryOpener] = useState('')
 
@@ -257,25 +262,25 @@ export default function Home() {
       {error && <p className="">Error: {error}</p>}
 
       <div className="game-area">
-        <div className="game-header flex justify-between items-center mb-4">
-          <div className="w-56">
+        <div className="game-header flex flex-wrap items-center mb-4 bg-black/20 backdrop-blur-sm md:bg-transparent">
+          <div className="w-2/5 md:w-1/4">
             <Tooltip content="Return Home">
-              <button className="btn-read-more mr-5" onClick={onExitAttempt}>
+              <button className="btn-read-more mr-2 md:mr-5" onClick={onExitAttempt}>
                 <i className="fa-light fa-home"></i>
               </button>
             </Tooltip>
 
             <LogsButton />
           </div>
-          <div className="text-center">
-            <h2 className="text-xl font-bold">Suits Interactive Game</h2>
+          <div className="w-3/5 md:w-1/2 text-left md:text-center">
+            <h2 className="text-md md:text-xl font-bold">Suits Interactive Game</h2>
             {gameLog.length ? <GamePlaybackTime /> : '00:00'}
           </div>
-          <div className="">
+          <div className="w-full md:w-1/4 mt-4 md:mt-0">
             {/* TODO: Different colors for progress based on level */}
             <Progress
               classNames={{
-                base: 'min-w-[300px] ',
+                base: 'min-w-[300px]',
                 track: 'drop-shadow-lg',
                 indicator: 'bg-gradient-to-r from-fuchsia-800 to-violet-500',
                 label: 'tracking-wider font-medium text-default-600',
@@ -283,7 +288,7 @@ export default function Home() {
               label="Chance of getting hired"
               radius="lg"
               showValueLabel={true}
-              size="md"
+              size={isMobile ? "sm" : "md"}
               value={gameState.hireability}
             />
           </div>
@@ -530,3 +535,10 @@ export default function Home() {
     </div>
   )
 }
+
+
+// <div class="row">
+//   <div class="col-4 col-md-3"> </div>
+//   <div class="col-8 col-md-6 text-left text-md-center"> </div>
+//   <div class="col-12 col-md-3"> </div>
+// </div>

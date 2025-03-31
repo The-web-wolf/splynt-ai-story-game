@@ -126,6 +126,12 @@ div {
 
   --b: 2px;
   --s: 0.45em;
+  @media #{$sm-layout} {
+    --s: 0.2em;
+
+    font-size:16px
+  }
+  
   --color: var(--color-primary);
 
   padding: calc(0.5em + var(--s)) calc(0.9em + var(--s));

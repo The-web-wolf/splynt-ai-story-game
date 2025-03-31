@@ -28,8 +28,8 @@ const HomePage = () => {
       difficulty: difficultySettings,
     })
 
-    addGameLogEntry({type: 'story', text: `Game Difficulty set to ${difficultySettings.label}`})
-    addGameLogEntry({type: 'story', text: `Language set to ${selectedLanguage}`})
+    addGameLogEntry({ type: 'story', text: `Game Difficulty set to ${difficultySettings.label}` })
+    addGameLogEntry({ type: 'story', text: `Language set to ${selectedLanguage}` })
   }
 
   useEffect(() => {
@@ -48,24 +48,25 @@ const HomePage = () => {
   }, [])
 
   return (
-    <div className="inner text-center">
-      <div>
-        <h1 className="title display-one text-balance font-bold">
-          AI-Powered
-          <span className="header-caption theme-gradient ">Interactive</span> Story Game
-        </h1>
-        <p className="description ">
-          Experience a unique, ever-evolving story where your choices guide the narrative, powered
-          by real-time AI without predefined scripts.
-        </p>
+    <>
+      <div className="inner text-center flex-1">
+        <div>
+          <h1 className="title display-one text-balance font-bold">
+            AI-Powered
+            <span className="header-caption theme-gradient ">Interactive</span> Story Game
+          </h1>
+          <p className="description ">
+            Experience a unique, ever-evolving story where your choices guide the narrative, powered
+            by real-time AI without predefined scripts.
+          </p>
+        </div>
       </div>
-      <form className="w-full" onSubmit={startGame}>
+      <form className="w-full h-52 text-center py-3" onSubmit={startGame}>
         <div className=" flex gap-10 justify-center ">
           <Select
             className=" flex-1 max-w-60"
             label="Choose difficulty"
-            color="info"
-            size="lg"
+            size="md"
             selectedKeys={[selectedDifficulty]}
             onChange={(e) => setSelectedDifficulty(e.target.value)}
           >
@@ -81,8 +82,7 @@ const HomePage = () => {
           <Select
             className=" flex-1 max-w-60"
             label="Choose language"
-            color="default"
-            size="lg"
+            size="md"
             selectedKeys={[selectedLanguage]}
             onChange={(e) => setSelectedLanguage(e.target.value)}
           >
@@ -96,12 +96,8 @@ const HomePage = () => {
             ))}
           </Select>
         </div>
-        <div className="mt-20">
-          <button
-            className="btn-read-more p-6"
-            type="submit"
-            disabled={loading}
-          >
+        <div className="mt-8">
+          <button className="btn-read-more p-6" type="submit" disabled={loading}>
             <span>
               Begin Game{' '}
               <i
@@ -113,8 +109,7 @@ const HomePage = () => {
           </button>
         </div>
       </form>
-      <Shapes />
-    </div>
+    </>
   )
 }
 

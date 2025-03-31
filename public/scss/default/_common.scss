@@ -269,12 +269,6 @@ body {
 }
 
 
-.not-found-page {
-  height: 100vh;
-  justify-content: center;
-  align-items:center;
-}
-
 .container {
   @media #{$smlg-device} {
     max-width: 97vw !important;
@@ -288,7 +282,11 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  padding: 1em;
+
+
+   @media #{$sm-layout} {
+            padding: 0em;
+        }
 
   .game-area {
     width: 100%;
@@ -299,15 +297,20 @@ body {
     .game-header {
       min-height: $header-height;
     }
-    .game-body {
+    .game-header,.game-body,.game-footer{
       padding: 0.5em;
       width: 1200px;
-      max-width: 99vw;
+      max-width: 100%;
       margin: 0 auto;
+    }
+    .game-body {
       flex: 1;
       .story-text {
         line-height: 1.5;
         font-size: 30px;
+        @media #{$sm-layout} {
+          font-size:20px
+        }
       }
     }
     .game-footer {
@@ -315,9 +318,6 @@ body {
       display:flex;
       flex-direction: column;
       justify-content: flex-end;
-      width: 1200px;
-      max-width: 99vw;
-      margin: 0 auto;
       // text-align: center;
       .choices {
         .choice {
@@ -344,14 +344,11 @@ body {
     outline: 0;
     display: block;
     width: 100%;
-    padding: 16px 130px 16px 60px;
+    padding: 16px 60px;
     font-size: 16px;
     line-height: 22px;
     max-height: 200px;
 
-    @media #{$small-mobile} {
-      padding: 12px 100px 35px 40px;
-    }
   }
 
   .left-icons {

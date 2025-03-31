@@ -17,7 +17,7 @@ import Image from 'next/image'
 
 import bgShapeOne from '@/public/images/bg/bg-shape-four.png'
 import bgShapeTwo from '@/public/images/bg/bg-shape-five.png'
-import { Analytics } from "@vercel/analytics/react"
+import { Analytics } from '@vercel/analytics/react'
 const sora = Sora({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
@@ -83,21 +83,12 @@ export default function RootLayout({ children }) {
                   <div className="interactive"></div>
                 </div>
               </div>
-              <div
-                className="slider-area variation-default slider-bg-image bg-banner1 slider-bg-shape full-page"
-                data-black-overlay="1"
-              >
-                <div className="container">
-                  <div className="row justify-content-center">
-                    <div className="col-lg-12">
-                      <HeroUIProvider>
-                        <NextThemesProvider attribute="class" defaultTheme="dark">
-                          {children}
-                        </NextThemesProvider>
-                      </HeroUIProvider>
-                    </div>
-                  </div>
-                </div>
+              <div className="main-layout" data-black-overlay="1">
+                <HeroUIProvider>
+                  <NextThemesProvider attribute="class" defaultTheme="dark">
+                    <div className="container">{children}</div>
+                  </NextThemesProvider>
+                </HeroUIProvider>
                 <div className="bg-shape">
                   <Image className="bg-shape-one" width={640} src={bgShapeOne} alt="Bg Shape" />
                   <Image className="bg-shape-two" src={bgShapeTwo} width={626} alt="Bg Shape" />
