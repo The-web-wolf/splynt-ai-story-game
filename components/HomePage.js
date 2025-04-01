@@ -52,6 +52,7 @@ const HomePage = () => {
         <div>
           <h1 className="title display-one font-bold">
             AI Generated
+            <br className='hidden md:block' />
             <span className="header-caption theme-gradient "> Interactive </span> Story Game
           </h1>
           <p className="description ">
