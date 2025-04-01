@@ -480,6 +480,9 @@ export default function Home() {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.5, ease: 'easeInOut', delay: 2 }}
                 >
+                  <h4 className="p-1">
+                    Resolve: <span className="font-bold"> {gameState.outcome} </span>
+                  </h4>
                   <button className="btn-read-more" onClick={restartGame} disabled={!gameOver}>
                     Start a new game <i className="fa-light fa-rotate-left ml-2"></i>
                   </button>
