@@ -51,12 +51,13 @@ const HomePage = () => {
       <div className="inner text-center flex-1">
         <div>
           <h1 className="title display-one text-balance font-bold">
-            AI-Powered
-            <span className="header-caption theme-gradient ">Interactive</span> Story Game
+            AI Generated
+            <span className="header-caption theme-gradient "> Interactive </span> Story Game
           </h1>
           <p className="description ">
-            Experience a unique, ever-evolving story where your choices guide the narrative, powered
-            by real-time AI without predefined scripts.
+            You are <span className='text-primary'>Mike Ross</span>, an aspiring lawyer on your first interview at one of the biggest law
+            firms in New York, this is your shot to make a name for yourself. <br /> Can you get
+            Hired?
           </p>
         </div>
       </div>

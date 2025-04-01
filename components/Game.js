@@ -169,6 +169,21 @@ export default function Home() {
 
   const onExitAttempt = async () => {
     onOpen()
+    if (gameOver) {
+      setExitConfirmation({
+        loading: false,
+        title: 'You are standing up...',
+        body: 'You gave it your best, feel free to play replay with a different difficulty level or perhaps a different language.',
+      })
+      return
+    } else if (!gameStarted) {
+      setExitConfirmation({
+        loading: false,
+        title: 'You turned around...',
+        body: 'Donna: are you really leaving without giving this a shot? WOW!',
+      })
+      return
+    }
     setExitConfirmation({
       loading: true,
       title: 'You are standing up...',
@@ -268,7 +283,7 @@ export default function Home() {
             <LogsButton />
           </div>
           <div className="hidden md:inline-block md:w-1/2 text-left md:text-center">
-            <h2 className="text-md md:text-xl font-bold">Suits Interactive Game</h2>
+            <h2 className="text-md md:text-xl font-bold">Can you get hired?</h2>
             {gameLog.length ? <GamePlaybackTime /> : '00:00'}
           </div>
           <div className="w-2/3 md:w-1/4">
