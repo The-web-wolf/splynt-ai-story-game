@@ -1,5 +1,6 @@
 .display-one {
   font-size: 75px;
+  text-wrap:pretty;
 
   @media #{$lg-layout} {
     font-size: 70px;
