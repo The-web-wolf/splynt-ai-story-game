@@ -234,15 +234,21 @@ export default function Home() {
   }
 
   // auto scroll story container
-  const storyRef = useRef(null) // story container
+  const storyRef = useRef(null)
+
   useEffect(() => {
     if (storyRef.current) {
-      const { scrollHeight, clientHeight, scrollTop } = storyRef.current
-      // Only scroll if content overflows
-      if (scrollHeight > clientHeight) {
+      const paragraphs = storyRef.current.querySelectorAll('.story-text') 
+      const lastParagraph = paragraphs[paragraphs.length - 1] 
+  
+      if (lastParagraph) {
+        const { top } = lastParagraph.getBoundingClientRect()
+        const { top: containerTop } = storyRef.current.getBoundingClientRect()
+        const offset = 20 
+  
         storyRef.current.scrollTo({
-          top: scrollHeight,
-          behavior: scrollTop === 0 ? 'auto' : 'smooth', // Avoid smooth scrolling on first render
+          top: storyRef.current.scrollTop + (top - containerTop) - offset, 
+          behavior: 'smooth',
         })
       }
     }
