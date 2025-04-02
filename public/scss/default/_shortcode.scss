@@ -59,8 +59,17 @@ iframe {
 .layout-fullscreen {
   min-height: 100dvh;
   width: 100%;
+  video {
+    min-width: 100%;
+    min-height: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    object-fit: cover;
+  }
 }
-
 
 /*=============================
 	Overlay styles 
@@ -113,4 +122,3 @@ iframe {
     opacity: #{$i * 0.1};
   }
 }
-

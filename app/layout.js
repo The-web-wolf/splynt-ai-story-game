@@ -18,7 +18,7 @@ import Image from 'next/image'
 import bgShapeOne from '@/public/images/bg/bg-shape-one.png'
 import bgShapeTwo from '@/public/images/bg/bg-shape-two.png'
 import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/next'
 const sora = Sora({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
@@ -60,30 +60,10 @@ export default function RootLayout({ children }) {
         <main className="page-wrapper">
           <GameProvider>
             <section className="layout-fullscreen">
-              <div className="animated-gradient-bg">
-                <svg xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <filter id="goo">
-                      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
-                      <feColorMatrix
-                        in="blur"
-                        mode="matrix"
-                        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8"
-                        result="goo"
-                      />
-                      <feBlend in="SourceGraphic" in2="goo" />
-                    </filter>
-                  </defs>
-                </svg>
-                <div className="gradients-container">
-                  <div className="g1"></div>
-                  <div className="g2"></div>
-                  <div className="g3"></div>
-                  <div className="g4"></div>
-                  <div className="g5"></div>
-                  <div className="interactive"></div>
-                </div>
-              </div>
+              <video autoPlay loop muted playsInline>
+                <source src="images/bg/gradient.mp4" type="video/mp4" />
+                <img src="images/bg/gradient.png" />
+              </video>
               <div className="main-layout" data-black-overlay="1">
                 <HeroUIProvider>
                   <NextThemesProvider attribute="class" defaultTheme="dark">
