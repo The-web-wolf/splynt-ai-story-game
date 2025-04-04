@@ -80,6 +80,10 @@ export default function Home() {
     setLoading(true)
     setError(null)
     const stepData = await generateStoryStep(gameState, gameSettings)
+    // randomize the order of choices
+    if (stepData && stepData.choices) {
+      stepData.choices = stepData.choices.sort(() => Math.random() - 0.5)
+    }
     if (stepData) {
       setCurrentStepData(stepData)
       addGameLogEntry({ type: 'model', text: stepData.story })
@@ -238,16 +242,16 @@ export default function Home() {
 
   useEffect(() => {
     if (storyRef.current) {
-      const paragraphs = storyRef.current.querySelectorAll('.story-text') 
-      const lastParagraph = paragraphs[paragraphs.length - 1] 
-  
+      const paragraphs = storyRef.current.querySelectorAll('.story-text')
+      const lastParagraph = paragraphs[paragraphs.length - 1]
+
       if (lastParagraph) {
         const { top } = lastParagraph.getBoundingClientRect()
         const { top: containerTop } = storyRef.current.getBoundingClientRect()
-        const offset = 20 
-  
+        const offset = 20
+
         storyRef.current.scrollTo({
-          top: storyRef.current.scrollTop + (top - containerTop) - offset, 
+          top: storyRef.current.scrollTop + (top - containerTop) - offset,
           behavior: 'smooth',
         })
       }
@@ -487,7 +491,7 @@ export default function Home() {
                   transition={{ duration: 0.5, ease: 'easeInOut', delay: 2 }}
                 >
                   <h4 className="p-1">
-                    Resolve: <span className="font-bold"> {gameState.outcome} </span>
+                    <span className="font-bold"> {gameState.outcome} </span> in <GamePlaybackTime />s
                   </h4>
                   <button className="btn-read-more" onClick={restartGame} disabled={!gameOver}>
                     Start a new game <i className="fa-light fa-rotate-left ml-2"></i>

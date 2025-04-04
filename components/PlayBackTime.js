@@ -21,7 +21,7 @@ function GamePlaybackTime() {
       }
     }
   }, [gameOver])
-  return <div>{playbackTime}</div>
+  return <span>{playbackTime}</span>
 }
 
 export default GamePlaybackTime
