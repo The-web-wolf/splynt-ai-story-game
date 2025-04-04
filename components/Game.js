@@ -558,7 +558,7 @@ export default function Home() {
                 <button onClick={onClose}>Sit back</button>
                 <button
                   className="btn-read-more"
-                  onClick={() => router.push('/')}
+                  onClick={restartGame}
                   disabled={exitConfirmation.loading}
                 >
                   {exitConfirmation.loading ? 'Wait a sec...' : "I'll Leave"}
