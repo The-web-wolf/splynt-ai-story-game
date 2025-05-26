@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Splynt AI Story Game
 
-## Getting Started
+**Splynt AI Story Game** is a web-based interactive narrative game where players engage with an AI to create dynamic, adaptive stories. Built with Next.js and React, the game features a modular architecture and a simple local AI engine to generate story responses based on user input.
 
-First, run the development server:
+## **Features**
+
+* **Dynamic AI-Powered Storytelling:** Interact with an AI that adapts the narrative based on your choices and input.
+
+* **Intuitive UI:** Clean, responsive design with dedicated components for gameplay, logs, and navigation.
+
+* **Global State Management:** Uses React Context to manage player data and story state.
+
+* **Easily Extendable:** Modular structure for adding new stories, models, or UI components.
+
+## **Getting Started**
+
+### **Prerequisites**
+
+* [Node.js](https://nodejs.org/) (v18 or higher recommended)
+
+* [npm](https://www.npmjs.com/) or compatible package manager (Yarn, pnpm)
+
+### **Installation**
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/yourusername/splynt-ai-story-game.git  
+cd splynt-ai-story-game  
+npm install
+```
+
+### **Environment Variables**
+Create a `.env.local` file in the root directory to configure environment variables.
+
+```plaintext
+NEXT_PUBLIC_GOOGLE_API_KEY=your_google_api_key_here
+```
+
+### **Running the App**
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## **Project Structure**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+splynt-ai-story-game/  
+├── app/                \# Next.js App Router and pages  
+├── components/         \# React UI components (Game, HomePage, LogsButton, etc.)  
+├── context/            \# React Context for global state management  
+├── lib/                \# AI/model logic, constants, and utility functions  
+├── public/             \# Static assets (images, fonts, etc.)  
+├── package.json        \# Project metadata and scripts  
+└── ...                 \# Config files and other assets
 
-## Learn More
+## **Key Components**
 
-To learn more about Next.js, take a look at the following resources:
+* **HomePage:** Landing page and game entry point
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* **Game:** Main interactive story UI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+* **LogsButton:** View action or conversation logs
 
-## Deploy on Vercel
+* **PlayBackTime:** Review previous game states or actions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* **Context:** React context for managing story/game state globally
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+* **model.js:** Simple AI/model logic to generate adaptive story responses
+
+## **Customization**
+
+You can extend or replace the story data and AI logic by editing files in the lib/ directory. To connect to a real AI service or language model, modify lib/model.js to call your backend API or service.
+
+## **Deployment**
+
+To build and deploy for production:
+```bash
+npm run build  
+npm start
+```
+
+You can also deploy to [Vercel](https://vercel.com/) or any platform that supports Next.js.
+
+## **Contributing**
+
+Pull requests and suggestions are welcome\! Please fork the repository and open an issue or PR.
+
+## **License**
+
+MIT License – free to use, modify, and distribute.
+
+---
+
+**Questions?**
+
+Feel free to reach out by opening an issue or contacting the maintainer.
+
+---
+
+Let me know if you want any specific sections added (e.g., **Demo**, **Credits**, **Screenshots**) or want the repo/project details filled in with your information\!
+
