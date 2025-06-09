@@ -93,14 +93,3 @@ Pull requests and suggestions are welcome\! Please fork the repository and open 
 ## **License**
 
 MIT License – free to use, modify, and distribute.
-
----
-
-**Questions?**
-
-Feel free to reach out by opening an issue or contacting the maintainer.
-
----
-
-Let me know if you want any specific sections added (e.g., **Demo**, **Credits**, **Screenshots**) or want the repo/project details filled in with your information\!
-
