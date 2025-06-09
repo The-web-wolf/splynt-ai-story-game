@@ -1,7 +1,7 @@
 // app/page.js
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   generateStoryStep,
   interpretUserInput,
@@ -22,10 +22,9 @@ import {
   useDisclosure,
 } from '@heroui/react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useRouter } from 'next/navigation'
-import { purifyText } from '@/lib/utilities'
+import { purifyText, relativeTimeFromFirstLog } from '@/lib/utilities'
 import LogsButton from '@/components/LogsButton'
-import GamePlaybackTime from '@/components/PlayBackTime'
+import dayjs from 'dayjs'
 
 export default function Home() {
   const {
@@ -47,13 +46,10 @@ export default function Home() {
     setGameStarted,
     conclusion,
     setConclusion,
-    resetGame,
     gameSettings,
     backLogMessages,
     addBackLogMessage,
   } = useGame()
-
-  const router = useRouter()
 
   const [storyOpener, setStoryOpener] = useState('')
 
@@ -228,12 +224,6 @@ export default function Home() {
   }
 
   const restartGame = async () => {
-    // if (!gameStarted) {
-    //   return
-    // }
-    // resetGame()
-    // initGame()
-
     window.location.href = '/'
   }
 
@@ -277,6 +267,23 @@ export default function Home() {
     }
   }, [gameState, gameOver])
 
+  const [playbackTime, setPlaybackTime] = useState('00:00')
+  const intervalRef = useRef(null)
+
+  useEffect(() => {
+    if (gameLog && gameLog.length > 0 && !gameOver) {
+      intervalRef.current = setInterval(() => {
+        setPlaybackTime(relativeTimeFromFirstLog(dayjs(), gameLog))
+      }, 1000)
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [gameOver])
+
   return (
     <div className="game-container">
       {error && <p className="">Error: {error}</p>}
@@ -294,7 +301,7 @@ export default function Home() {
           </div>
           <div className="hidden md:inline-block md:w-1/2 text-left md:text-center">
             <h2 className="text-md md:text-xl font-bold">Can you get hired?</h2>
-            {gameLog.length ? <GamePlaybackTime /> : '00:00'}
+            {gameLog.length ? <span>{playbackTime}</span> : '00:00'}
           </div>
           <div className="w-2/3 md:w-1/4">
             {/* TODO: Different colors for progress based on level */}
@@ -491,7 +498,7 @@ export default function Home() {
                   transition={{ duration: 0.5, ease: 'easeInOut', delay: 2 }}
                 >
                   <h4 className="p-1">
-                    <span className="font-bold"> {gameState.outcome} </span> in <GamePlaybackTime />s
+                    <span className="font-bold"> {gameState.outcome} </span> in <span>{playbackTime}</span>s
                   </h4>
                   <button className="btn-read-more" onClick={restartGame} disabled={!gameOver}>
                     Start a new game <i className="fa-light fa-rotate-left ml-2"></i>
@@ -531,6 +538,7 @@ export default function Home() {
                     </button>
                   </Tooltip>
                 </div>
+
                 <div className="right-icons">
                   <Tooltip content="Send response">
                     <button
